@@ -1,0 +1,8 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+webapp/.idea
+
+
+*.xml
+.idea/
+*.pyc
