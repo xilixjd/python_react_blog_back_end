@@ -6,3 +6,5 @@ webapp/.idea
 *.xml
 .idea/
 *.pyc
+
+fabfile.py
