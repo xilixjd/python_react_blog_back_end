@@ -28,7 +28,7 @@ python __init__.py
 5.启动 mysql redis celery
 ```angular2html
 redis-server
-celery worker -A webapp.celery_worker.celery
+celery worker -A webapp.celery_worker.celery --loglevel=info
 ```
 
 ## 拓展库及应用
