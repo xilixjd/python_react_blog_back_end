@@ -112,4 +112,4 @@ if __name__ == '__main__':
     # app.app_context().push()
     # app.run(host='0.0.0.0')
     # gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 module:app
-    socketio.run(app, host='0.0.0.0')
+    socketio.run(app)
