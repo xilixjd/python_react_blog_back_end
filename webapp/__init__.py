@@ -73,8 +73,10 @@ def create_app(DevConfig):
     db.init_app(app)
 
     with app.app_context():
-        # db.drop_all()
+        db.drop_all()
         db.create_all()
+        from webapp.app_blueprint import create_fake_data
+        create_fake_data()
 
     login_manager.init_app(app)
     rest_api.add_resource(BlogApi, '/api/blog', '/api/blog/<int:id>')

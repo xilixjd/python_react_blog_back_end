@@ -25,49 +25,49 @@ app_blueprint = Blueprint(
 )
 
 def create_fake_data():
-    # tag1 = Tag('前端')
-    # tag1.save()
-    # tag2 = Tag('后端')
-    # tag2.save()
-    # tag3 = Tag('JavaScript')
-    # tag3.save()
-    # tag4 = Tag('Python')
-    # tag4.save()
-    # tag5 = Tag('面试')
-    # tag5.save()
-    # tag6 = Tag('SQL')
-    # tag6.save()
-    # tag7 = Tag('读书笔记')
-    # tag7.save()
-    # blog1 = Blog('xilixjd', 'MySQL必知必会读书笔记', blog1_content)
-    # blog1.time = time.time()*1000
-    # blog1.tags.extend([tag2, tag6, tag7])
-    # blog1.save()
-    # time.sleep(3)
-    # blog2 = Blog('xilixjd', '单页web应用 JavaScript 从前端到后端', blog2_content)
-    # blog2.time = time.time()*1000
-    # blog2.tags.extend([Tag.query.filter_by(title='前端').first(), Tag.query.filter_by(title='后端').first(), Tag.query.filter_by(title='JavaScript').first(), tag7])
-    # blog2.save()
-    # time.sleep(3)
-    # blog3 = Blog('xilixjd', 'JavaScript 语言精粹', blog3_content)
-    # blog3.time = time.time()*1000
-    # blog3.tags.extend([tag1, tag3, tag7])
-    # blog3.save()
-    # time.sleep(3)
-    # blog4 = Blog('xilixjd', 'JavaScript高级程序设计', blog4_content)
-    # blog4.time = time.time()*1000
-    # blog4.tags.extend([tag1, tag3, tag7])
-    # blog4.save()
-    # time.sleep(3)
-    # blog5 = Blog('xilixjd', '超长干货超多的前端面试汇总', blog5_content)
-    # blog5.time = time.time()*1000
-    # blog5.tags.extend([Tag.query.filter_by(title='前端').first(), Tag.query.filter_by(title='面试').first(), Tag.query.filter_by(title='JavaScript').first()])
-    # blog5.save()
-    # blog6 = Blog('xilixjd', 'clean-code-javascript', blog6_content)
-    # blog6.time = time.time()*1000
-    # blog6.tags.extend([Tag.query.filter_by(title='前端').first(), Tag.query.filter_by(title='JavaScript').first()])
-    # blog6.save()
-    pass
+    tag1 = Tag('前端')
+    tag1.save()
+    tag2 = Tag('后端')
+    tag2.save()
+    tag3 = Tag('JavaScript')
+    tag3.save()
+    tag4 = Tag('Python')
+    tag4.save()
+    tag5 = Tag('面试')
+    tag5.save()
+    tag6 = Tag('SQL')
+    tag6.save()
+    tag7 = Tag('读书笔记')
+    tag7.save()
+    blog1 = Blog('xilixjd', 'MySQL必知必会读书笔记', blog1_content)
+    blog1.time = time.time()*1000
+    blog1.tags.extend([tag2, tag6, tag7])
+    blog1.save()
+    time.sleep(3)
+    blog2 = Blog('xilixjd', '单页web应用 JavaScript 从前端到后端', blog2_content)
+    blog2.time = time.time()*1000
+    blog2.tags.extend([Tag.query.filter_by(title='前端').first(), Tag.query.filter_by(title='后端').first(), Tag.query.filter_by(title='JavaScript').first(), tag7])
+    blog2.save()
+    time.sleep(3)
+    blog3 = Blog('xilixjd', 'JavaScript 语言精粹', blog3_content)
+    blog3.time = time.time()*1000
+    blog3.tags.extend([tag1, tag3, tag7])
+    blog3.save()
+    time.sleep(3)
+    blog4 = Blog('xilixjd', 'JavaScript高级程序设计', blog4_content)
+    blog4.time = time.time()*1000
+    blog4.tags.extend([tag1, tag3, tag7])
+    blog4.save()
+    time.sleep(3)
+    blog5 = Blog('xilixjd', '超长干货超多的前端面试汇总', blog5_content)
+    blog5.time = time.time()*1000
+    blog5.tags.extend([Tag.query.filter_by(title='前端').first(), Tag.query.filter_by(title='面试').first(), Tag.query.filter_by(title='JavaScript').first()])
+    blog5.save()
+    blog6 = Blog('xilixjd', 'clean-code-javascript', blog6_content)
+    blog6.time = time.time()*1000
+    blog6.tags.extend([Tag.query.filter_by(title='前端').first(), Tag.query.filter_by(title='JavaScript').first()])
+    blog6.save()
+    # pass
 
 
 @app_blueprint.route('/')

@@ -75,6 +75,7 @@ class BlogApi(Resource):
                 # 这里可以用 celery
                 blog_dict = blog.to_dict()
                 redis.hmset(redis_key, blog_dict)
+                redis.expire(redis_key, 86400 * 5)
                 return blog
             else:
                 return blog_redis
