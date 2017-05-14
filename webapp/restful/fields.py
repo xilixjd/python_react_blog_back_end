@@ -95,3 +95,10 @@ user_fields = {
     'messages': fields.List(fields.Nested(message_fields)),
     "uncheckedMessagesLen": fields.Integer(),
 }
+
+search_fields = {
+    'type': fields.String(),
+    'content': fields.String(),
+    'url': fields.String(),
+    'id': fields.Integer(),
+}

@@ -19,6 +19,7 @@ from parsers import message_post
 from parsers import mention_post
 from parsers import zan_post
 from parsers import img_get
+from parsers import search_post
 
 from fields import blog_fields
 from fields import comment_fields
@@ -27,6 +28,7 @@ from fields import tag_blog_fields
 from fields import message_fields
 from fields import user_fields
 from fields import comment_page_fields
+from fields import search_fields
 
 import time
 import re
@@ -40,6 +42,7 @@ from webapp.models import Zan
 from webapp.models import Reply
 
 from webapp.extensions import redis
+from webapp.extensions import query_search_to_string
 
 from webapp.events import emit_new_message_to_current_user
 
@@ -50,6 +53,8 @@ from webapp.send_email import write_zan_model_operation
 from webapp.tasks import async
 
 import requests
+
+import jieba
 
 
 import sys
@@ -465,3 +470,46 @@ class GetImgApi(Resource):
             # print s.get(temp['image']).status_code
             data.append(temp)
         return data[:16]
+
+
+class SearchApi(Resource):
+    def post(self):
+        args = search_post.parse_args()
+        content = args['content']
+        blog_lists = Blog.query.whoosh_search(content).all()
+        user_lists = User.query.whoosh_search(content).all()
+        comment_lists = Comment.query.whoosh_search(content).all()
+        lists = blog_lists + user_lists + comment_lists
+        parser = list(jieba.cut(content, cut_all=False))
+        response_lists = []
+        for l in lists:
+            l_type = l.__class__.__name__
+            l_dict = {}
+            if l_type == "Blog":
+                l_dict = {
+                    'url': '/post/{}?{}'.format(l.id, query_search_to_string(parser)),
+                    'type': l_type,
+                    'content': l.title,
+                    'id': l.id,
+                }
+            elif l_type == "Comment":
+                blog_id = l.blog_id
+                comment_index = l.index_of_comment_in_blog()
+                url = '/post/{}?pageIdx={}&{}#comment{}'.format(blog_id,
+                    str((comment_index + 15 - 1) / 15), query_search_to_string(parser),
+                    str(l.id))
+                l_dict = {
+                    'url': url,
+                    'type': l_type,
+                    'content': l.content,
+                    'id': l.id,
+                }
+            elif l_type == "User":
+                l_dict = {
+                    'url': '/user/{}?{}'.format(l.id, content),
+                    'type': l_type,
+                    'content': l.username,
+                    'id': l.id,
+                }
+            response_lists.append(l_dict)
+        return response_lists

@@ -9,6 +9,7 @@ sys.path.append(rootPath)
 from flask import Flask
 from flask_login import LoginManager
 from flask_cors import CORS
+import flask_whooshalchemyplus
 
 from webapp.extensions import rest_api
 from webapp.extensions import db
@@ -17,6 +18,7 @@ from webapp.extensions import celery
 from webapp.extensions import socketio
 
 from webapp.models.user import User
+from webapp.models.blog import Blog
 
 from webapp.events import *
 
@@ -33,6 +35,7 @@ from restful import MessageApi
 from restful import MentionApi
 from restful import ZanApi
 from restful import GetImgApi
+from restful import SearchApi
 
 from celery import Celery
 
@@ -87,8 +90,11 @@ def create_app(DevConfig):
     rest_api.add_resource(MentionApi, '/api/usernameMention')
     rest_api.add_resource(ZanApi, '/api/comment/<int:comment_id>/zan')
     rest_api.add_resource(GetImgApi, '/api/imgs')
+    rest_api.add_resource(SearchApi, '/api/search')
 
     rest_api.init_app(app)
+
+    flask_whooshalchemyplus.init_app(app)
 
     celery.conf.update(app.config)
     # celery.init_app(app)
@@ -112,4 +118,5 @@ if __name__ == '__main__':
     # app.app_context().push()
     # app.run(host='0.0.0.0')
     # gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 module:app
+    # celery worker -A webapp.celery_worker.celery --loglevel=info
     socketio.run(app)

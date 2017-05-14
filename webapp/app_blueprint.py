@@ -72,8 +72,9 @@ def create_fake_data():
 
 @app_blueprint.route('/')
 def hello_world():
-    create_fake_data()
-    # return render_template("index.html")
+    # create_fake_data()
+    lists = Blog.query.whoosh_search('必知必会').all()
+    print lists
     return "hello"
 
 

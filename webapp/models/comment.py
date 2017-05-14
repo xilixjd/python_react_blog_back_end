@@ -5,9 +5,13 @@ from webapp.extensions import db
 from sqlalchemy.orm import class_mapper
 from sqlalchemy import func
 
+from jieba.analyse.analyzer import ChineseAnalyzer
+
 
 class Comment(db.Model):
     __tablename__ = 'comments'
+    __searchable__ = ['content']
+    __analyzer__ = ChineseAnalyzer()
 
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.BigInteger)
@@ -51,4 +55,22 @@ class Comment(db.Model):
     @staticmethod
     def total():
         return db.session.query(func.count(Comment.id)).all()[0][0]
+
+    def index_of_comment_in_blog(self):
+        '''
+        查询某 blog 所属的 comment 是第几条数据，以此来得到分页信息
+        :param id:
+        :return:
+        '''
+        sql_str = '''
+                SELECT COUNT(*) as count FROM comments
+                LEFT JOIN blogs ON comments.blog_id=blogs.id
+                WHERE comments.id<={} order by comments.id asc;
+                '''.format(self.id)
+        ret = db.engine.execute(sql_str).fetchall()
+        try:
+            return int([dict(r) for r in ret][0]['count'])
+        except:
+            return 0
+
 

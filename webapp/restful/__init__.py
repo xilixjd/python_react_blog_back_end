@@ -14,3 +14,4 @@ from .api import MessageApi
 from .api import MentionApi
 from .api import ZanApi
 from .api import GetImgApi
+from .api import SearchApi

@@ -72,3 +72,7 @@ zan_post.add_argument('href', type=str)
 # 获取图片列表
 img_get = reqparse.RequestParser()
 img_get.add_argument('pageIdx', type=str)
+
+# 搜索
+search_post = reqparse.RequestParser()
+search_post.add_argument('content', type=str)

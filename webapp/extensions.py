@@ -43,6 +43,16 @@ def url_for(*args, **kwargs):
     return _url_for(*args, **kwargs)
 
 
+def query_search_to_string(query_list):
+    s = ""
+    for query in query_list:
+        s += "search=" + query + "&"
+    if len(s) > 0:
+        return s[:-1]
+    else:
+        return s
+
+
 # 跨域装饰器
 # from functools import wraps
 # from flask import make_response

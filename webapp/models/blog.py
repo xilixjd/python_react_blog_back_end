@@ -6,6 +6,8 @@ from sqlalchemy.orm import class_mapper
 
 from sqlalchemy.dialects.mysql import LONGTEXT
 
+from jieba.analyse.analyzer import ChineseAnalyzer
+
 
 tags = db.Table(
     'blog_tags',
@@ -16,6 +18,8 @@ tags = db.Table(
 
 class Blog(db.Model):
     __tablename__ = 'blogs'
+    __searchable__ = ['title', 'content']
+    __analyzer__ = ChineseAnalyzer()
 
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.BigInteger)

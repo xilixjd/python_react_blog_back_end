@@ -2,14 +2,19 @@
 
 from webapp.extensions import db
 
+from jieba.analyse.analyzer import ChineseAnalyzer
+
 
 class User(db.Model):
     __tablename__ = 'users'
+    __searchable__ = ['username']
+    __analyzer__ = ChineseAnalyzer()
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     email = db.Column(db.String(255))
+    time = db.Column(db.BigInteger)
 
     messages = db.relationship('Message', backref='users', lazy='dynamic')
 
