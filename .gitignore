@@ -9,3 +9,5 @@ webapp/.idea
 fabfile.py
 
 whoosh_index/
+
+node_modules/
