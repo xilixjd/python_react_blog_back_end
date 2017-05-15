@@ -9,7 +9,8 @@ sys.path.append(rootPath)
 from flask import Flask
 from flask_login import LoginManager
 from flask_cors import CORS
-from flask_whooshalchemy import whoosh_index
+from flask_whooshalchemyplus import index_all
+import flask_whooshalchemyplus
 
 from webapp.extensions import rest_api
 from webapp.extensions import db
@@ -76,11 +77,14 @@ def create_app(DevConfig):
     with app.app_context():
         # db.drop_all()
         db.create_all()
-        whoosh_index(app, Blog)
-        whoosh_index(app, Comment)
-        whoosh_index(app, User)
         # from webapp.app_blueprint import create_fake_data
         # create_fake_data()
+        # whoosh_index(app, Blog)
+        # whoosh_index(app, Comment)
+        # whoosh_index(app, User)
+        index_all(app)
+
+    flask_whooshalchemyplus.init_app(app)
 
     login_manager.init_app(app)
     rest_api.add_resource(BlogApi, '/api/blog', '/api/blog/<int:id>')
@@ -99,8 +103,6 @@ def create_app(DevConfig):
     rest_api.add_resource(SearchApi, '/api/search')
 
     rest_api.init_app(app)
-
-    # flask_whooshalchemyplus.init_app(app)
 
     celery.conf.update(app.config)
     # celery.init_app(app)

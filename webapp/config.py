@@ -7,7 +7,7 @@ class DevConfig(object):
     SECRET_KEY = 'xilixjd'
     # DEBUG = True
     SQLALCHEMY_DATABASE_URI = DB_URI
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 25
     MAIL_USE_TLS = True
