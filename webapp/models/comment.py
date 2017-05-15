@@ -64,9 +64,9 @@ class Comment(db.Model):
         '''
         sql_str = '''
                 SELECT COUNT(*) as count FROM comments
-                LEFT JOIN blogs ON comments.blog_id=blogs.id
-                WHERE comments.id<={} order by comments.id asc;
-                '''.format(self.id)
+                WHERE comments.blog_id={}
+                AND comments.id<={} order by comments.id asc;
+                '''.format(self.blog_id, self.id)
         ret = db.engine.execute(sql_str).fetchall()
         try:
             return int([dict(r) for r in ret][0]['count'])
