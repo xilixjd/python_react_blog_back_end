@@ -9,8 +9,7 @@ sys.path.append(rootPath)
 from flask import Flask
 from flask_login import LoginManager
 from flask_cors import CORS
-import flask_whooshalchemyplus
-from flask_whooshalchemyplus import index_all
+from flask_whooshalchemy import whoosh_index
 
 from webapp.extensions import rest_api
 from webapp.extensions import db
@@ -20,6 +19,7 @@ from webapp.extensions import socketio
 
 from webapp.models.user import User
 from webapp.models.blog import Blog
+from webapp.models.comment import Comment
 
 from webapp.events import *
 
@@ -76,7 +76,9 @@ def create_app(DevConfig):
     with app.app_context():
         # db.drop_all()
         db.create_all()
-        index_all(app)
+        whoosh_index(app, Blog)
+        whoosh_index(app, Comment)
+        whoosh_index(app, User)
         # from webapp.app_blueprint import create_fake_data
         # create_fake_data()
 
@@ -98,7 +100,7 @@ def create_app(DevConfig):
 
     rest_api.init_app(app)
 
-    flask_whooshalchemyplus.init_app(app)
+    # flask_whooshalchemyplus.init_app(app)
 
     celery.conf.update(app.config)
     # celery.init_app(app)
