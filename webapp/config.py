@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from consts import DB_URI
+import os
 
 
 class DevConfig(object):
@@ -15,6 +16,7 @@ class DevConfig(object):
     MAIL_DEFAULT_SENDER = '349729220@qq.com'
     CELERY_BROKER_URL = 'redis://localhost:6379/0'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    WHOOSH_BASE = os.path.abspath('./whoosh_index')
     # CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
     # CELERY_TASK_SERIALIZER = ['*']
     # CELERY_RESULT_SERIALIZER = ['pickle', 'json', 'msgpack', 'yaml']

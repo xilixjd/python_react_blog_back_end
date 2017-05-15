@@ -10,6 +10,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_cors import CORS
 import flask_whooshalchemyplus
+from flask_whooshalchemyplus import index_all
 
 from webapp.extensions import rest_api
 from webapp.extensions import db
@@ -75,6 +76,7 @@ def create_app(DevConfig):
     with app.app_context():
         # db.drop_all()
         db.create_all()
+        index_all(app)
         # from webapp.app_blueprint import create_fake_data
         # create_fake_data()
 
