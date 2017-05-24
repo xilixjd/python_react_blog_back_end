@@ -75,14 +75,14 @@ def create_app(DevConfig):
     db.init_app(app)
 
     with app.app_context():
-        # db.drop_all()
+        db.drop_all()
         db.create_all()
-        # from webapp.app_blueprint import create_fake_data
-        # create_fake_data()
+        from webapp.app_blueprint import create_fake_data
+        create_fake_data()
         # whoosh_index(app, Blog)
         # whoosh_index(app, Comment)
         # whoosh_index(app, User)
-        index_all(app)
+        # index_all(app)
 
     flask_whooshalchemyplus.init_app(app)
 
