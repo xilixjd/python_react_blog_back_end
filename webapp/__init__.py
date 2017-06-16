@@ -79,7 +79,7 @@ def create_app(DevConfig):
     db.init_app(app)
 
     with app.app_context():
-        # db.drop_all()
+        db.drop_all()
         db.create_all()
         create_user()
         from webapp.app_blueprint import create_fake_data
