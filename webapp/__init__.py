@@ -81,9 +81,9 @@ def create_app(DevConfig):
     with app.app_context():
         # db.drop_all()
         db.create_all()
-        # create_user()
-        # from webapp.app_blueprint import create_fake_data
-        # create_fake_data()
+        create_user()
+        from webapp.app_blueprint import create_fake_data
+        create_fake_data()
         # whoosh_index(app, Blog)
         # whoosh_index(app, Comment)
         # whoosh_index(app, User)
