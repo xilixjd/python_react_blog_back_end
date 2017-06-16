@@ -11,3 +11,7 @@ fabfile.py
 whoosh_index/
 
 node_modules/
+
+dump.rdb
+
+python_react_blog_supervisor_log.log
