@@ -7,7 +7,7 @@ from .user import User
 from .message import Message
 from .reply import Reply
 from .zan import Zan
-
+from .role import Role
 
 
 

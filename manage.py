@@ -11,6 +11,7 @@ from webapp.models import Comment
 from webapp.models import Message
 from webapp.models import Reply
 from webapp.models import Zan
+from webapp.models import Role
 
 from flask_script import Manager
 from flask_script import Server
@@ -40,7 +41,8 @@ def make_shell_context():
         Blog=Blog,
         Comment=Comment,
         Tag=Tag,
-        Zan=Zan
+        Zan=Zan,
+        Role=Role,
     )
 
 

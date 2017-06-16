@@ -2,10 +2,22 @@
 
 from webapp.extensions import db
 
+from functools import reduce
+from operator import or_
+
 from jieba.analyse.analyzer import ChineseAnalyzer
 
+from flask_security import UserMixin
 
-class User(db.Model):
+
+roles_users = db.Table(
+    'roles_users',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
+)
+
+
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     __searchable__ = ['username']
     __analyzer__ = ChineseAnalyzer()
@@ -14,13 +26,14 @@ class User(db.Model):
     username = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     email = db.Column(db.String(255))
-    time = db.Column(db.BigInteger)
+    create_time = db.Column(db.String(255))
 
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     messages = db.relationship('Message', backref='users', lazy='dynamic')
 
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
+    def __init__(self, **kwargs):
+        self.username = kwargs['username']
+        self.password = kwargs['password']
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)
@@ -57,6 +70,12 @@ class User(db.Model):
 
     def get_id(self):
         return unicode(self.id)
+
+    def can(self, permissions):
+        if self.roles is None:
+            return False
+        all_perms = reduce(or_, map(lambda x: x.permissions, self.roles))
+        return all_perms & permissions == permissions
 
     @staticmethod
     def get_username_by_reg(reg):

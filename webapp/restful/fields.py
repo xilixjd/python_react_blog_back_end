@@ -72,6 +72,7 @@ comment_fields = {
     'receiver': fields.String(),
     'zan_count': fields.Integer(),
     'liked': fields.Integer(),
+    'allow_delete': fields.Boolean(),
 }
 
 comment_page_fields = generate_data_wrap_fields(page_fields, comment_fields)

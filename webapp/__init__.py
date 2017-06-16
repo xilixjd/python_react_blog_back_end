@@ -11,16 +11,19 @@ from flask_login import LoginManager
 from flask_cors import CORS
 from flask_whooshalchemyplus import index_all
 import flask_whooshalchemyplus
+from flask_security import SQLAlchemyUserDatastore, Security
 
 from webapp.extensions import rest_api
 from webapp.extensions import db
 from webapp.extensions import mail
 from webapp.extensions import celery
 from webapp.extensions import socketio
+from webapp.extensions import Permission
 
 from webapp.models.user import User
 from webapp.models.blog import Blog
 from webapp.models.comment import Comment
+from webapp.models.role import Role
 
 from webapp.events import *
 
@@ -53,6 +56,7 @@ login_manager = LoginManager()
 def load_user(userid):
     return User.query.get(int(userid))
 
+
 # socketio = SocketIO()
 
 # celery = Celery(__name__, broker=DevConfig.CELERY_BROKER_URL, backend=DevConfig.CELERY_RESULT_BACKEND)
@@ -75,10 +79,11 @@ def create_app(DevConfig):
     db.init_app(app)
 
     with app.app_context():
-        # db.drop_all()
+        db.drop_all()
         db.create_all()
-        # from webapp.app_blueprint import create_fake_data
-        # create_fake_data()
+        create_user()
+        from webapp.app_blueprint import create_fake_data
+        create_fake_data()
         # whoosh_index(app, Blog)
         # whoosh_index(app, Comment)
         # whoosh_index(app, User)
@@ -119,6 +124,31 @@ def create_app(DevConfig):
     socketio.init_app(app, message_queue=app.config['CELERY_BROKER_URL'])
 
     return app
+
+
+# @app.before_first_request
+def create_user():
+    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+    # db.drop_all()
+    # db.create_all()
+    # user_datastore.create_user(username='matt@nobien.net', password='password')
+    # db.session.commit()
+    # print user_datastore.find_user(username='matt@nobien.net')
+    for permissions, (name, desc) in Permission.PERMISSION_MAP.items():
+        user_datastore.find_or_create_role(
+            name=name, description=desc, permissions=permissions)
+    for username, passwd, permissions in (
+            ('xjd', '123', (
+                    Permission.LOGIN, Permission.EDITOR)),
+            ('xilixjd', '123', (Permission.ADMINISTER,))):
+        user = user_datastore.create_user(username=username, password=passwd)
+        db.session.commit()
+        for permission in permissions:
+            user_datastore.add_role_to_user(
+                user,
+                user_datastore.find_role(role=Permission.PERMISSION_MAP[permission][0])
+            )
+            db.session.commit()
 
 
 if __name__ == '__main__':

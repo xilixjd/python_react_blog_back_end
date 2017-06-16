@@ -20,6 +20,7 @@ from parsers import mention_post
 from parsers import zan_post
 from parsers import img_get
 from parsers import search_post
+from parsers import comment_delete_parser
 
 from fields import blog_fields
 from fields import comment_fields
@@ -31,6 +32,7 @@ from fields import comment_page_fields
 from fields import search_fields
 
 import time
+import datetime
 import re
 
 from webapp.models import Blog
@@ -43,6 +45,7 @@ from webapp.models import Reply
 
 from webapp.extensions import redis
 from webapp.extensions import query_search_to_string
+from webapp.extensions import Permission
 
 from webapp.events import emit_new_message_to_current_user
 
@@ -191,10 +194,12 @@ class CommentApi(Resource):
         if current_user.is_active:
             user_id = current_user.id
             for comment in comments:
+                allow_delete = comment.author == current_user.username or current_user.can(Permission.ADMINISTER)
                 c = comment.to_dict()
                 redis_key = 'zan_comment:{}'.format(comment.id)
                 c['liked'] = redis.getbit(redis_key, user_id)
                 c['zan_count'] = redis.bitcount(redis_key, 0, -1)
+                c['allow_delete'] = allow_delete
                 comments_list.append(c)
             # 先根据赞的数量由大到小排序， 再根据时间从小到大排序
             comments_list.sort(key=lambda k: (-k['zan_count'], k['time']))
@@ -207,6 +212,7 @@ class CommentApi(Resource):
                 redis_key = 'zan_comment:{}'.format(comment.id)
                 c['liked'] = 0
                 c['zan_count'] = redis.bitcount(redis_key, 0, -1)
+                c['allow_delete'] = False
                 comments_list.append(c)
             # 先根据赞的数量由大到小排序， 再根据时间从小到大排序
             comments_list.sort(key=lambda k: (-k['zan_count'], k['time']))
@@ -290,6 +296,22 @@ class CommentApi(Resource):
                     emit_new_message_to_current_user(u, Message)
         return comment
 
+    @marshal_with(comment_fields)
+    def delete(self, blog_id=None):
+        if not blog_id:
+            abort(404)
+        args = comment_delete_parser.parse_args()
+        comment_id = args['commentId']
+        if not comment_id:
+            abort(404)
+        comment = Comment.query.get(comment_id)
+        if comment and current_user.is_active and (comment.author == current_user.username
+                                                   or current_user.can(Permission.ADMINISTER)):
+            comment.delete()
+            return comment
+        else:
+            abort(404)
+
 
 class RegisterApi(Resource):
     def post(self):
@@ -299,17 +321,22 @@ class RegisterApi(Resource):
         args_password = args['password']
         args_email = args['email']
         new_user = User(args_username, args_password)
+        new_user.create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         new_user.email = args_email
-        try:
-            new_user.save()
-            result = send_email('xilixjd blog', [args_email], '欢迎注册')
-        except:
-            new_user.roll_back()
-            return None, 404
+
         d = {
             "username": new_user.username
         }
-        return d, 202, {'Location': url_for('emails.get_status', id=result.id)}
+        try:
+            new_user.save()
+            if args_email:
+                result = send_email('xilixjd blog', [args_email], '欢迎注册')
+                return d, 202, {'Location': url_for('emails.get_status', id=result.id)}
+            else:
+                return d, 202
+        except:
+            new_user.roll_back()
+            return None, 404
 
 
 class LoginApi(Resource):

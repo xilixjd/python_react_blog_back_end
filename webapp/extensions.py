@@ -53,6 +53,18 @@ def query_search_to_string(query_list):
         return s
 
 
+class Permission(object):
+    LOGIN = 0x01
+    EDITOR = 0x02
+    OPERATOR = 0x04
+    ADMINISTER = 0xff
+    PERMISSION_MAP = {
+        LOGIN: ('login', 'Login user'),
+        EDITOR: ('editor', 'Editor'),
+        OPERATOR: ('op', 'Operator'),
+        ADMINISTER: ('admin', 'Super administer'),
+    }
+
 # 跨域装饰器
 # from functools import wraps
 # from flask import make_response

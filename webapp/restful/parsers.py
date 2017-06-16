@@ -41,6 +41,10 @@ comment_post_parser.add_argument('content', type=str, required=True)
 comment_post_parser.add_argument('replyTo', type=str)
 comment_post_parser.add_argument('href', type=str)
 
+# delete
+comment_delete_parser = reqparse.RequestParser()
+comment_delete_parser.add_argument('commentId', type=int, required=True)
+
 # login
 # post
 login_post = reqparse.RequestParser()
