@@ -9,6 +9,8 @@ from jieba.analyse.analyzer import ChineseAnalyzer
 
 from flask_security import UserMixin
 
+import time
+
 
 roles_users = db.Table(
     'roles_users',
@@ -27,6 +29,9 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255))
     email = db.Column(db.String(255))
     create_time = db.Column(db.String(255))
+    online = db.Column(db.Boolean, default=False)
+    last_seen_at = db.Column(db.Integer, default=time.time())
+    updated_at = db.Column(db.Integer, default=time.time(), onupdate=time.time())
 
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     messages = db.relationship('Message', backref='users', lazy='dynamic')
@@ -76,6 +81,13 @@ class User(db.Model, UserMixin):
             return False
         all_perms = reduce(or_, map(lambda x: x.permissions, self.roles))
         return all_perms & permissions == permissions
+
+    def ping(self):
+        """Marks the user as recently seen and online."""
+        self.last_seen_at = time.time()
+        last_online = self.online
+        self.online = True
+        return last_online != self.online
 
     @staticmethod
     def get_username_by_reg(reg):

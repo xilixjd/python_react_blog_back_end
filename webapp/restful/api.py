@@ -7,6 +7,7 @@ from flask_login import login_user
 from flask_login import logout_user
 
 from flask import url_for
+from flask import session
 
 from parsers import bloglist_get_parser
 from parsers import bloglist_post_parser
@@ -21,6 +22,7 @@ from parsers import zan_post
 from parsers import img_get
 from parsers import search_post
 from parsers import comment_delete_parser
+from parsers import userAndRoom_post
 
 from fields import blog_fields
 from fields import comment_fields
@@ -320,7 +322,7 @@ class RegisterApi(Resource):
         user = User.query.filter_by(username=args_username).first()
         args_password = args['password']
         args_email = args['email']
-        new_user = User(args_username, args_password)
+        new_user = User(username=args_username, password=args_password)
         new_user.create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         new_user.email = args_email
 
@@ -541,3 +543,28 @@ class SearchApi(Resource):
                 }
             response_lists.append(l_dict)
         return response_lists
+
+
+class userAndRoomApi(Resource):
+    def get(self):
+        username = session.get('username', '')
+        if current_user.is_active:
+            username = current_user.username
+        room = session.get('room', '')
+        return {
+            'username': username,
+            'room': room,
+        }
+
+    def post(self):
+        args = userAndRoom_post.parse_args()
+        username = args['username']
+        room = args['room']
+        session['username'] = username
+        if current_user.is_active:
+            session['username'] = current_user.username
+        session['room'] = room
+        return {
+            'username': username,
+            'room': room,
+        }

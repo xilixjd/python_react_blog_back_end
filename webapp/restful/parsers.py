@@ -80,3 +80,8 @@ img_get.add_argument('pageIdx', type=str)
 # 搜索
 search_post = reqparse.RequestParser()
 search_post.add_argument('content', type=str)
+
+# 五子棋房间号和用户名
+userAndRoom_post = reqparse.RequestParser()
+userAndRoom_post.add_argument('username', type=str)
+userAndRoom_post.add_argument('room', type=str)

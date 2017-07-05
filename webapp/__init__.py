@@ -41,6 +41,7 @@ from restful import MentionApi
 from restful import ZanApi
 from restful import GetImgApi
 from restful import SearchApi
+from restful import userAndRoomApi
 
 from celery import Celery
 
@@ -106,6 +107,7 @@ def create_app(DevConfig):
     rest_api.add_resource(ZanApi, '/api/comment/<int:comment_id>/zan')
     rest_api.add_resource(GetImgApi, '/api/imgs')
     rest_api.add_resource(SearchApi, '/api/search')
+    rest_api.add_resource(userAndRoomApi, '/api/wuziqi/userandroom')
 
     rest_api.init_app(app)
 
