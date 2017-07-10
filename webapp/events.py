@@ -99,6 +99,8 @@ def on_match(msg):
         socketio.emit('messages', {'message': username + ' is ready!'}, room=room)
         socketio.emit('password', d, room=match_password)
     elif len(ready_rooms) == 1:
+        if time.time() - ready_rooms[0].created_at > 1800:
+            ready_rooms[0].delete()
         match_password = ready_rooms[0].match_password
         another_username = ready_rooms[0].username
         the_room.ready = 1
@@ -121,6 +123,9 @@ def on_match(msg):
             chess.save()
         socketio.emit('resetChessBoard', chess.chess_board, room=room)
     else:
+        for r in ready_rooms:
+            if time.time() - r.created_at > 1800:
+                r.delete()
         return
 
 

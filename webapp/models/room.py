@@ -2,6 +2,8 @@
 
 from webapp.extensions import db
 
+import time
+
 
 class Room(db.Model):
     __tablename__ = 'rooms'
@@ -11,6 +13,7 @@ class Room(db.Model):
     username = db.Column(db.String(100))
     match_password = db.Column(db.String(100))
     ready = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.Integer, default=time.time())
 
     def __init__(self, **kwargs):
         self.username = kwargs['username']
