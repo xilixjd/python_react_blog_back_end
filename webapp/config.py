@@ -5,7 +5,7 @@ from consts import DB_URI
 
 class DevConfig(object):
     SECRET_KEY = 'xilixjd'
-    DEBUG = True
+    # DEBUG = True
     SQLALCHEMY_DATABASE_URI = DB_URI
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     MAIL_SERVER = 'smtp.qq.com'
